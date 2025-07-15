@@ -31,4 +31,10 @@ public class LoanController {
         LoanDTO returnedLoan = loanService.returnLoan(id, returnLoanRequest.getReturnDate());
         return new ResponseEntity<>(returnedLoan, HttpStatus.OK);
     }
+
+    @PostMapping("/{id}/extend")
+    public ResponseEntity<LoanDTO> extendLoan(@PathVariable Long id) {
+        LoanDTO extendedLoan = loanService.extendLoan(id);
+        return new ResponseEntity<>(extendedLoan, HttpStatus.OK);
+    }
 }
