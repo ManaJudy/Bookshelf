@@ -24,5 +24,7 @@ public class Loan {
 
     private LocalDate startDate;
     private LocalDate endDate;
+    private LocalDate previsionEndDate;
+
     private Boolean isReturned;
 }
