@@ -22,6 +22,7 @@ public class MemberToMemberDTO implements Function<Member, MemberDTO> {
         memberDTO.setEmail(member.getEmail());
         memberDTO.setPassword(member.getPassword());
         memberDTO.setSubscriptionStartDate(member.getSubscriptionStartDate());
+        memberDTO.setPenaltyEndDate(member.getPenaltyEndDate());
         return memberDTO;
     }
 }

@@ -7,6 +7,8 @@ import com.mana.bookshelf.entity.Member;
 import com.mana.bookshelf.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 public class MemberService {
 
@@ -20,8 +22,16 @@ public class MemberService {
         this.memberToMemberDTO = memberToMemberDTO;
     }
 
+    public void verifyMember(Member member) {
+        if (memberRepository.findByEmail(member.getEmail()).isPresent())
+            throw new IllegalStateException("Member with email " + member.getEmail() + " already exists.");
+    }
+
     public MemberDTO createMember(MemberDTO memberDTO) {
         Member member = memberDTOToMember.apply(memberDTO);
+        member.setSubscriptionEndDate(member.getSubscriptionStartDate().plusYears(1));
+        member.setPenaltyEndDate(null);
+        verifyMember(member);
         member = memberRepository.save(member);
         return memberToMemberDTO.apply(member);
     }
