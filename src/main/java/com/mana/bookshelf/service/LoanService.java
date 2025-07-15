@@ -30,7 +30,7 @@ public class LoanService {
         Member member = loan.getMember();
         if (member.getSubscriptionEndDate().isAfter(loan.getStartDate()))
             throw new IllegalStateException("Member's subscription is not active for the loan start date.");
-        if (loanRepository.countByMemberIdAndIsReturnedFalse(member.getId(), loan.getStartDate()) > member.getSubscriptionType().getQuota())
+        if (loanRepository.countByMemberIdAndIsReturnedFalse(member.getId(), loan.getStartDate()) >= member.getSubscriptionType().getQuota())
             throw new IllegalStateException("Member has reached the loan quota for their subscription type.");
         if (loan.getBookCopy() == null)
             throw new IllegalStateException("No available book copy for the loan.");
