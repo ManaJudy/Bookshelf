@@ -11,6 +11,7 @@ import java.util.Optional;
 @Repository
 public interface BookCopyRepository extends JpaRepository<BookCopy, Long> {
     @Query("select bk from BookCopy bk where bk.book.id = :bookId " +
-            "and bk not in (select l.bookCopy from Loan l where l.isReturned = false or l.endDate > :currentDate) ")
+            "and bk not in (select l.bookCopy from Loan l where l.isReturned = false or l.endDate > :currentDate) " +
+            "and bk not in (select r.bookCopy from Reservation r where r.approved = true ) ")
     Optional<BookCopy> findAvailableCopyByBookId(Long bookId, LocalDate currentDate);
 }
