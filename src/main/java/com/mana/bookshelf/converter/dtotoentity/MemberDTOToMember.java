@@ -7,6 +7,8 @@ import com.mana.bookshelf.exception.EntityNotFoundException;
 import com.mana.bookshelf.repository.SubscriptionTypeRepository;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.util.Optional;
 import java.util.function.Function;
 
 @Component
@@ -32,8 +34,9 @@ public class MemberDTOToMember implements Function<MemberDTO, Member> {
         member.setSubscriptionType(subscriptionType);
         member.setEmail(memberDTO.getEmail());
         member.setPassword(memberDTO.getPassword());
-        member.setSubscriptionStartDate(memberDTO.getSubscriptionStartDate());
+        member.setSubscriptionStartDate(Optional.ofNullable(memberDTO.getSubscriptionStartDate()).orElse(LocalDate.now()));
         member.setSubscriptionEndDate(memberDTO.getSubscriptionEndDate());
+        member.setPenaltyEndDate(memberDTO.getPenaltyEndDate());
         return member;
     }
 }

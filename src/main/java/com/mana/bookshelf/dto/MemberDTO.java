@@ -18,4 +18,5 @@ public class MemberDTO {
     private String password;
     private LocalDate subscriptionStartDate;
     private LocalDate subscriptionEndDate;
+    private LocalDate penaltyEndDate;
 }

@@ -27,6 +27,12 @@ public class Member {
     private LocalDate subscriptionStartDate;
     private LocalDate subscriptionEndDate;
 
+    private LocalDate penaltyEndDate;
+
     private Boolean isAdmin;
+
+    public int getAge(LocalDate currentDate) {
+        return currentDate.getYear() - birthDate.getYear();
+    }
 
 }
