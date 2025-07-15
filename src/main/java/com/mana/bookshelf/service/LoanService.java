@@ -5,7 +5,9 @@ import com.mana.bookshelf.converter.entitytodto.LoanToLoanDTO;
 import com.mana.bookshelf.dto.LoanDTO;
 import com.mana.bookshelf.entity.Loan;
 import com.mana.bookshelf.entity.Member;
+import com.mana.bookshelf.exception.EntityNotFoundException;
 import com.mana.bookshelf.repository.LoanRepository;
+import com.mana.bookshelf.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -13,11 +15,13 @@ import java.time.LocalDate;
 @Service
 public class LoanService {
     private final LoanRepository loanRepository;
+    private final MemberRepository memberRepository;
     private final LoanDTOToLoan loanDTOToLoan;
     private final LoanToLoanDTO loanToLoanDTO;
 
-    public LoanService(LoanRepository loanRepository, LoanDTOToLoan loanDTOToLoan, LoanToLoanDTO loanToLoanDTO) {
+    public LoanService(LoanRepository loanRepository, MemberRepository memberRepository, LoanDTOToLoan loanDTOToLoan, LoanToLoanDTO loanToLoanDTO) {
         this.loanRepository = loanRepository;
+        this.memberRepository = memberRepository;
         this.loanDTOToLoan = loanDTOToLoan;
         this.loanToLoanDTO = loanToLoanDTO;
     }
@@ -44,6 +48,24 @@ public class LoanService {
         loan.setIsReturned(false);
         verifyLoan(loan);
         loan = loanRepository.save(loan);
+        return loanToLoanDTO.apply(loan);
+    }
+
+    public LoanDTO returnLoan(Long loanId, LocalDate returnDate) {
+        Loan loan = loanRepository.findById(loanId)
+                .orElseThrow(() -> new EntityNotFoundException("Loan not found with id: " + loanId));
+        if (loan.getIsReturned())
+            throw new IllegalStateException("Loan with id " + loanId + " has already been returned.");
+        loan.setIsReturned(true);
+        loan.setEndDate(returnDate != null ? returnDate : LocalDate.now());
+        loan = loanRepository.save(loan);
+        int j = 2; // To change // TODO
+        if (loan.getEndDate().isAfter(loan.getStartDate().plusDays(loan.getLoanType().getMaxLoanDays()))) {
+            Member member = loan.getMember();
+            LocalDate lastPenaltyEndDate = member.getPenaltyEndDate() != null ? member.getPenaltyEndDate() : loan.getEndDate();
+            member.setPenaltyEndDate(lastPenaltyEndDate.plusDays(j));
+            memberRepository.save(member);
+        }
         return loanToLoanDTO.apply(loan);
     }
 }
