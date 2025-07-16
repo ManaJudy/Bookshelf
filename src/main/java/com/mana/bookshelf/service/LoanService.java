@@ -104,7 +104,12 @@ public class LoanService {
             throw new IllegalArgumentException("New prevision end date cannot be before the current prevision end date.");
         if (extensionRepository.countActiveByMemberId(loan.getMember().getId(), extendDate) >= loan.getMember().getSubscriptionType().getQuotaExtends())
             throw new IllegalStateException("Member has reached the extend quota for their subscription type.");
-        loan.setPrevisionEndDate(newPrevisionEndDate);
+Member member = loan.getMember();
+        if (member.getSubscriptionEndDate().isBefore(loan.getEndDate())) {
+            System.out.println("Subscription end date: " + member.getSubscriptionEndDate());
+            System.out.println("Loan start date: " + loan.getStartDate());
+            throw new IllegalStateException("Member's subscription is not active for the loan start date.");
+        }        loan.setPrevisionEndDate(newPrevisionEndDate);
         loan = loanRepository.save(loan);
         Extension extension = new Extension();
         extension.setLoan(loan);
