@@ -11,6 +11,8 @@ import com.mana.bookshelf.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LoanService {
@@ -83,5 +85,11 @@ public class LoanService {
         loan.setPrevisionEndDate(newPrevisionEndDate);
         loan = loanRepository.save(loan);
         return loanToLoanDTO.apply(loan);
+    }
+
+    public List<LoanDTO> getLoans() {
+        return loanRepository.findLoansByReturnedFalse().stream()
+                .map(loanToLoanDTO)
+                .collect(Collectors.toList());
     }
 }
