@@ -32,7 +32,7 @@ public class LoanService {
         Member member = loan.getMember();
         if (member.getSubscriptionEndDate().isBefore(loan.getStartDate()))
             throw new IllegalStateException("Member's subscription is not active for the loan start date.");
-        if (loanRepository.countByMemberIdAndIsReturnedFalse(member.getId(), loan.getStartDate()) >= member.getSubscriptionType().getQuota())
+        if (loanRepository.countByMemberIdAndIsReturnedFalse(member.getId(), loan.getStartDate()) >= member.getSubscriptionType().getQuotaLoans())
             throw new IllegalStateException("Member has reached the loan quota for their subscription type.");
         if (loan.getBookCopy() == null)
             throw new IllegalStateException("No available book copy for the loan.");
@@ -47,7 +47,7 @@ public class LoanService {
         Loan loan = loanDTOToLoan.apply(loanDTO);
         if (loan.getStartDate() == null) loan.setStartDate(LocalDate.now());
         loan.setEndDate(null);
-        loan.setPrevisionEndDate(loan.getStartDate().plusDays(loan.getLoanType().getMaxLoanDays()));
+        loan.setPrevisionEndDate(loan.getStartDate().plusDays(loan.getMember().getSubscriptionType().getMaxLoanDays()));
         loan.setReturned(false);
         verifyLoan(loan);
         loan = loanRepository.save(loan);
@@ -62,7 +62,7 @@ public class LoanService {
         loan.setReturned(true);
         loan.setEndDate(returnDate != null ? returnDate : LocalDate.now());
         loan = loanRepository.save(loan);
-        int j = 2; // To change // TODO
+        int j = loan.getMember().getSubscriptionType().getPenaltyDays(); // To change // TODO
         if (loan.getEndDate().isAfter(loan.getPrevisionEndDate())) {
             Member member = loan.getMember();
             LocalDate penalityEndDate = member.getPenaltyEndDate();
@@ -82,13 +82,17 @@ public class LoanService {
             throw new IllegalStateException("Loan with id " + loanId + " has already been returned.");
         if (newPrevisionEndDate.isBefore(loan.getPrevisionEndDate()))
             throw new IllegalArgumentException("New prevision end date cannot be before the current prevision end date.");
+        if (loan.getMember().getExtendCount() >= loan.getMember().getSubscriptionType().getQuotaExtends())
+            throw new IllegalStateException("Member has reached the extend quota for their subscription type.");
         loan.setPrevisionEndDate(newPrevisionEndDate);
         loan = loanRepository.save(loan);
+        loan.getMember().setExtendCount(loan.getMember().getExtendCount() + 1);
+        memberRepository.save(loan.getMember());
         return loanToLoanDTO.apply(loan);
     }
 
     public List<LoanDTO> getLoans() {
-        return loanRepository.findLoansByReturnedFalse().stream()
+        return loanRepository.findLoansByIsReturnedFalse().stream()
                 .map(loanToLoanDTO)
                 .collect(Collectors.toList());
     }

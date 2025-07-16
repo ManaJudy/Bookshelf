@@ -24,6 +24,11 @@ public class ReservationController {
         return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
     }
 
+    @GetMapping("/create")
+    public String showCreateReservationForm() {
+        return "reservations/create_reservation"; // Assuming you have a Thymeleaf template for creating reservations
+    }
+
     @PostMapping("/{id}/approve")
     public ResponseEntity<ReservationDTO> approveReservation(@PathVariable Long id) {
         ReservationDTO approvedReservation = reservationService.approveReservation(id);

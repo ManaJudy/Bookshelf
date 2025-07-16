@@ -1,3 +1,5 @@
+
+
 INSERT INTO book (title, author, age_rating) VALUES ('Le Petit Prince', 'Antoine de Saint-Exupéry', 6);
 INSERT INTO book (title, author, age_rating) VALUES ('1984', 'George Orwell', 16);
 INSERT INTO book (title, author, age_rating) VALUES ('Harry Potter à l école des sorciers', 'J.K. Rowling', 10);

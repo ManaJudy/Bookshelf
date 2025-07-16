@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bookshelf - Retour d'emprunt</title>
+    <title>Bookshelf - Prolonger un emprunt</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome pour les icônes -->
@@ -26,7 +26,7 @@
             transition: all 0.3s;
         }
 
-        .form-card {
+        .form-container {
             background-color: white;
             border-radius: 15px;
             padding: 30px;
@@ -35,9 +35,9 @@
             border-left: 5px solid #3a5a40;
         }
 
-        .form-card h1 {
+        .form-title {
             color: #3a5a40;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .form-label {
@@ -91,40 +91,34 @@
     <!-- Contenu principal -->
     <div class="content">
         <div class="container-fluid mt-4">
-            <div class="form-card">
-                <h1><i class="fas fa-undo"></i> Retour d'emprunt</h1>
-                <p class="lead">Enregistrer le retour d'un livre emprunté</p>
+            <div class="form-container">
+                <h1 class="form-title"><i class="fas fa-calendar-plus"></i> Prolonger un emprunt</h1>
+                <p class="lead">Étendre la durée d'un emprunt existant</p>
 
                 <!-- Alerte de succès -->
                 <div class="alert alert-success" id="successAlert" role="alert">
-                    <i class="fas fa-check-circle me-2"></i> Le retour du livre a été enregistré avec succès!
+                    <i class="fas fa-check-circle me-2"></i> La prolongation de l'emprunt a été enregistrée avec succès!
                 </div>
 
                 <!-- Alerte d'erreur -->
                 <div class="alert alert-danger" id="errorAlert" role="alert">
-                    <i class="fas fa-exclamation-triangle me-2"></i> <span id="errorMessage">Une erreur s'est produite lors de l'enregistrement du retour.</span>
+                    <i class="fas fa-exclamation-triangle me-2"></i> <span id="errorMessage">Une erreur s'est produite lors de la prolongation de l'emprunt.</span>
                 </div>
 
-                <form id="returnForm">
+                <form id="extendLoanForm">
                     <div class="row mb-3">
                         <div class="col-md-12">
                             <label for="loanId" class="form-label">Emprunt</label>
                             <select class="form-select" id="loanId" name="loanId" required>
                                 <option value="" selected disabled>Sélectionnez un emprunt...</option>
                             </select>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-12">
-                            <label for="returnDate" class="form-label">Date de retour</label>
-                            <input type="date" class="form-control" id="returnDate" name="returnDate" required th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+                            <div id="loanDetails" class="mt-2 small text-muted"></div>
                         </div>
                     </div>
 
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                         <a th:href="@{/loans}" class="btn btn-secondary me-md-2">Annuler</a>
-                        <button type="submit" class="btn btn-primary">Enregistrer le retour</button>
+                        <button type="submit" class="btn btn-primary">Prolonger l'emprunt</button>
                     </div>
                 </form>
             </div>
@@ -135,37 +129,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Script pour la sidebar -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebarToggle = document.getElementById('sidebarToggle');
-            const sidebar = document.querySelector('.sidebar');
-            const content = document.querySelector('.content');
-            const logoFull = document.querySelector('.sidebar-header h3');
-            const logoSmall = document.querySelector('.logo-small');
-
-            // Initialiser la mise en page
-            content.style.marginLeft = '280px';
-
-            sidebarToggle.addEventListener('click', function() {
-                sidebar.classList.toggle('collapsed');
-                content.classList.toggle('expanded');
-
-                if (sidebar.classList.contains('collapsed')) {
-                    sidebar.style.width = '70px';
-                    content.style.marginLeft = '70px';
-                    document.querySelectorAll('.sidebar-menu span').forEach(el => el.style.display = 'none');
-                    logoFull.style.display = 'none';
-                    logoSmall.style.display = 'block';
-                } else {
-                    sidebar.style.width = '280px';
-                    content.style.marginLeft = '280px';
-                    document.querySelectorAll('.sidebar-menu span').forEach(el => el.style.display = 'inline');
-                    logoFull.style.display = 'block';
-                    logoSmall.style.display = 'none';
-                }
-            });
-        });
-    </script>
+    <th:block th:replace="fragments/sidebar :: sidebarScript"></th:block>
 
     <!-- Script pour charger les emprunts et gérer le formulaire -->
     <script>
@@ -173,8 +137,17 @@
             // Charger les emprunts actifs
             loadActiveLoans();
 
+            // Afficher les détails de l'emprunt lorsqu'un emprunt est sélectionné
+            document.getElementById('loanId').addEventListener('change', function() {
+                const selectedLoanId = this.value;
+                if (selectedLoanId) {
+                    // Afficher les détails de l'emprunt
+                    displayLoanDetails(selectedLoanId);
+                }
+            });
+
             // Gestion du formulaire
-            const form = document.getElementById('returnForm');
+            const form = document.getElementById('extendLoanForm');
 
             form.addEventListener('submit', function(event) {
                 event.preventDefault();
@@ -205,9 +178,10 @@
                         loans.forEach(loan => {
                             const option = document.createElement('option');
                             option.value = loan.id;
+                            option.setAttribute('data-due-date', loan.dueDate);
 
-                            // Format: nom adhérent - titre livre - type d'emprunt
-                            option.textContent = `${loan.memberName} - ${loan.bookTitle} - ${loan.loanTypeName}`;
+                            // Format: nom adhérent - titre livre - date d'échéance
+                            option.textContent = `${loan.memberName} - ${loan.bookTitle} - Échéance: ${formatDate(loan.dueDate)}`;
 
                             loanSelect.appendChild(option);
                         });
@@ -219,8 +193,33 @@
                 });
         }
 
+        function displayLoanDetails(loanId) {
+            fetch(`/loans/${loanId}`)
+                .then(response => response.json())
+                .then(loan => {
+                    const detailsDiv = document.getElementById('loanDetails');
+                    detailsDiv.innerHTML = `
+                        <div class="card mt-3 p-3">
+                            <p><strong>Adhérent:</strong> ${loan.memberName}</p>
+                            <p><strong>Livre:</strong> ${loan.bookTitle}</p>
+                            <p><strong>Date d'emprunt:</strong> ${formatDate(loan.startDate)}</p>
+                            <p><strong>Date d'échéance actuelle:</strong> ${formatDate(loan.dueDate)}</p>
+                            <p><strong>Type d'emprunt:</strong> ${loan.loanTypeName}</p>
+                        </div>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Erreur lors du chargement des détails de l\'emprunt:', error);
+                });
+        }
+
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('fr-FR', options);
+        }
+
         function validateForm() {
-            const form = document.getElementById('returnForm');
+            const form = document.getElementById('extendLoanForm');
 
             if (!form.checkValidity()) {
                 form.classList.add('was-validated');
@@ -231,21 +230,24 @@
         }
 
         function submitForm() {
-            const form = document.getElementById('returnForm');
+            const form = document.getElementById('extendLoanForm');
             const loanId = document.getElementById('loanId').value;
 
+            // Obtenir la date d'échéance actuelle et ajouter 14 jours par défaut
+            const selectedOption = document.getElementById('loanId').options[document.getElementById('loanId').selectedIndex]
+
             // Créer l'objet à envoyer
-            const returnData = {
-                returnDate: document.getElementById('returnDate').value
+            const extensionData = {
+
             };
 
             // Envoyer les données au serveur
-            fetch(`/loans/${loanId}/return`, {
+            fetch(`/loans/${loanId}/extend`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(returnData)
+                body: JSON.stringify(extensionData)
             })
             .then(response => {
                 if (!response.ok) {
@@ -261,16 +263,18 @@
                 // Réinitialiser le formulaire et recharger les emprunts actifs
                 form.reset();
                 form.classList.remove('was-validated');
-                document.getElementById('returnDate').valueAsDate = new Date();
 
                 // Vider et recharger la liste des emprunts
                 const loanSelect = document.getElementById('loanId');
                 loanSelect.innerHTML = '<option value="" selected disabled>Sélectionnez un emprunt...</option>';
                 loadActiveLoans();
+
+                // Effacer les détails
+                document.getElementById('loanDetails').innerHTML = '';
             })
             .catch(error => {
                 console.error('Erreur:', error);
-                let errorMessage = 'Une erreur s\'est produite lors de l\'enregistrement du retour.';
+                let errorMessage = 'Une erreur s\'est produite lors de la prolongation de l\'emprunt.';
 
                 // Afficher des erreurs spécifiques si disponibles
                 if (error.message) {

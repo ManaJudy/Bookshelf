@@ -14,7 +14,11 @@ public class SubscriptionTypeToSubscriptionTypeDTO implements Function<Subscript
         SubscriptionTypeDTO dto = new SubscriptionTypeDTO();
         dto.setId(subscriptionType.getId());
         dto.setName(subscriptionType.getName());
-        dto.setQuota(subscriptionType.getQuota());
+        dto.setQuotaLoans(subscriptionType.getQuotaLoans());
+        dto.setQuotaReservations(subscriptionType.getQuotaReservations());
+        dto.setQuotaExtends(subscriptionType.getQuotaExtends());
+        dto.setPenaltyDays(subscriptionType.getPenaltyDays());
+        dto.setMaxLoanDays(subscriptionType.getMaxLoanDays());
         return dto;
     }
 }

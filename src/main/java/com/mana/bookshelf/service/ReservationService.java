@@ -23,11 +23,13 @@ public class ReservationService {
     public void verifyReservation(Reservation reservation) {
         if (reservation.getBookCopy() == null)
             throw new IllegalStateException("No available book copy for the reservation.");
+        if (reservationRepository.countByMemberIdAndIsApprovedTrue(reservation.getMember().getId()) >= reservation.getMember().getSubscriptionType().getQuotaReservations())
+            throw new IllegalStateException("Member has reached the reservation quota for their subscription type.");
     }
 
     public ReservationDTO createReservation(ReservationDTO reservationDTO) {
         Reservation reservation = reservationDTOToReservation.apply(reservationDTO);
-        reservation.setApproved(false);
+        reservation.setApproved(true);
         verifyReservation(reservation);
         reservation = reservationRepository.save(reservation);
         return reservationToReservationDTO.apply(reservation);

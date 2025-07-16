@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bookshelf - Retour d'emprunt</title>
+    <title>Bookshelf - Nouvelle réservation</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome pour les icônes -->
@@ -92,39 +92,51 @@
     <div class="content">
         <div class="container-fluid mt-4">
             <div class="form-card">
-                <h1><i class="fas fa-undo"></i> Retour d'emprunt</h1>
-                <p class="lead">Enregistrer le retour d'un livre emprunté</p>
+                <h1><i class="fas fa-calendar-plus"></i> Nouvelle réservation</h1>
+                <p class="lead">Enregistrer une nouvelle réservation de livre</p>
 
                 <!-- Alerte de succès -->
                 <div class="alert alert-success" id="successAlert" role="alert">
-                    <i class="fas fa-check-circle me-2"></i> Le retour du livre a été enregistré avec succès!
+                    <i class="fas fa-check-circle me-2"></i> La réservation a été enregistrée avec succès!
                 </div>
 
                 <!-- Alerte d'erreur -->
                 <div class="alert alert-danger" id="errorAlert" role="alert">
-                    <i class="fas fa-exclamation-triangle me-2"></i> <span id="errorMessage">Une erreur s'est produite lors de l'enregistrement du retour.</span>
+                    <i class="fas fa-exclamation-triangle me-2"></i> <span id="errorMessage">Une erreur s'est produite lors de l'enregistrement de la réservation.</span>
                 </div>
 
-                <form id="returnForm">
+                <form id="reservationForm" th:action="@{/reservations}" method="post">
                     <div class="row mb-3">
-                        <div class="col-md-12">
-                            <label for="loanId" class="form-label">Emprunt</label>
-                            <select class="form-select" id="loanId" name="loanId" required>
-                                <option value="" selected disabled>Sélectionnez un emprunt...</option>
+                        <div class="col-md-6">
+                            <label for="memberId" class="form-label">Adhérent</label>
+                            <select class="form-select" id="memberId" name="memberId" required>
+                                <option value="" selected disabled>Sélectionnez un adhérent...</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="bookId" class="form-label">Livre</label>
+                            <select class="form-select" id="bookId" name="bookId" required>
+                                <option value="" selected disabled>Sélectionnez un livre...</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="row mb-3">
-                        <div class="col-md-12">
-                            <label for="returnDate" class="form-label">Date de retour</label>
-                            <input type="date" class="form-control" id="returnDate" name="returnDate" required th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+                        <div class="col-md-6">
+                            <label for="loanTypeId" class="form-label">Type d'emprunt</label>
+                            <select class="form-select" id="loanTypeId" name="loanTypeId" required>
+                                <option value="" selected disabled>Sélectionnez un type d'emprunt...</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="reservationDate" class="form-label">Date de réservation</label>
+                            <input type="date" class="form-control" id="reservationDate" name="reservationDate" required th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
                         </div>
                     </div>
 
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                        <a th:href="@{/loans}" class="btn btn-secondary me-md-2">Annuler</a>
-                        <button type="submit" class="btn btn-primary">Enregistrer le retour</button>
+                        <a th:href="@{/reservations}" class="btn btn-secondary me-md-2">Annuler</a>
+                        <button type="submit" class="btn btn-primary">Enregistrer la réservation</button>
                     </div>
                 </form>
             </div>
@@ -167,14 +179,53 @@
         });
     </script>
 
-    <!-- Script pour charger les emprunts et gérer le formulaire -->
+    <!-- Script pour charger les adhérents, livres et types d'emprunts -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Charger les emprunts actifs
-            loadActiveLoans();
+            // Charger les adhérents
+            fetch('/members')
+                .then(response => response.json())
+                .then(members => {
+                    const memberSelect = document.getElementById('memberId');
+                    members.forEach(member => {
+                        const option = document.createElement('option');
+                        option.value = member.id;
+                        option.textContent = `${member.firstName} ${member.lastName}`;
+                        memberSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Erreur lors du chargement des adhérents:', error));
+
+            // Charger les livres
+            fetch('/books')
+                .then(response => response.json())
+                .then(books => {
+                    const bookSelect = document.getElementById('bookId');
+                    books.forEach(book => {
+                        const option = document.createElement('option');
+                        option.value = book.id;
+                        option.textContent = book.title;
+                        bookSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Erreur lors du chargement des livres:', error));
+
+            // Charger les types d'emprunts
+            fetch('/loan-types')
+                .then(response => response.json())
+                .then(loanTypes => {
+                    const loanTypeSelect = document.getElementById('loanTypeId');
+                    loanTypes.forEach(type => {
+                        const option = document.createElement('option');
+                        option.value = type.id;
+                        option.textContent = type.name;
+                        loanTypeSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Erreur lors du chargement des types d\'emprunt:', error));
 
             // Gestion du formulaire
-            const form = document.getElementById('returnForm');
+            const form = document.getElementById('reservationForm');
 
             form.addEventListener('submit', function(event) {
                 event.preventDefault();
@@ -188,39 +239,8 @@
             });
         });
 
-        function loadActiveLoans() {
-            fetch('/loans')
-                .then(response => response.json())
-                .then(loans => {
-                    const loanSelect = document.getElementById('loanId');
-
-                    if (loans.length === 0) {
-                        const option = document.createElement('option');
-                        option.textContent = "Aucun emprunt actif disponible";
-                        option.disabled = true;
-                        loanSelect.appendChild(option);
-
-                        document.querySelector('button[type="submit"]').disabled = true;
-                    } else {
-                        loans.forEach(loan => {
-                            const option = document.createElement('option');
-                            option.value = loan.id;
-
-                            // Format: nom adhérent - titre livre - type d'emprunt
-                            option.textContent = `${loan.memberName} - ${loan.bookTitle} - ${loan.loanTypeName}`;
-
-                            loanSelect.appendChild(option);
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Erreur lors du chargement des emprunts:', error);
-                    showError('Erreur lors du chargement des emprunts. Veuillez rafraîchir la page.');
-                });
-        }
-
         function validateForm() {
-            const form = document.getElementById('returnForm');
+            const form = document.getElementById('reservationForm');
 
             if (!form.checkValidity()) {
                 form.classList.add('was-validated');
@@ -231,21 +251,25 @@
         }
 
         function submitForm() {
-            const form = document.getElementById('returnForm');
-            const loanId = document.getElementById('loanId').value;
+            const form = document.getElementById('reservationForm');
+            const formData = new FormData(form);
 
             // Créer l'objet à envoyer
-            const returnData = {
-                returnDate: document.getElementById('returnDate').value
+            const reservationData = {
+                memberId: formData.get('memberId'),
+                bookId: formData.get('bookId'),
+                loanTypeId: formData.get('loanTypeId'),
+                reservationDate: formData.get('reservationDate'),
+                isApproved: false
             };
 
             // Envoyer les données au serveur
-            fetch(`/loans/${loanId}/return`, {
+            fetch('/reservations', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(returnData)
+                body: JSON.stringify(reservationData)
             })
             .then(response => {
                 if (!response.ok) {
@@ -258,23 +282,39 @@
             .then(data => {
                 // Afficher un message de succès
                 showSuccess();
-                // Réinitialiser le formulaire et recharger les emprunts actifs
+                // Réinitialiser le formulaire
                 form.reset();
                 form.classList.remove('was-validated');
-                document.getElementById('returnDate').valueAsDate = new Date();
-
-                // Vider et recharger la liste des emprunts
-                const loanSelect = document.getElementById('loanId');
-                loanSelect.innerHTML = '<option value="" selected disabled>Sélectionnez un emprunt...</option>';
-                loadActiveLoans();
+                document.getElementById('reservationDate').valueAsDate = new Date();
             })
             .catch(error => {
                 console.error('Erreur:', error);
-                let errorMessage = 'Une erreur s\'est produite lors de l\'enregistrement du retour.';
+                let errorMessage = 'Une erreur s\'est produite lors de l\'enregistrement de la réservation.';
 
                 // Afficher des erreurs spécifiques si disponibles
                 if (error.message) {
                     errorMessage = error.message;
+                }
+
+                // Gérer les erreurs de validation
+                if (error.fieldErrors) {
+                    error.fieldErrors.forEach(fieldError => {
+                        const input = document.getElementById(fieldError.field);
+                        if (input) {
+                            input.classList.add('is-invalid-server');
+
+                            // Créer ou mettre à jour le message d'erreur
+                            let feedback = input.nextElementSibling;
+                            if (!feedback || !feedback.classList.contains('invalid-feedback-server')) {
+                                feedback = document.createElement('div');
+                                feedback.className = 'invalid-feedback-server';
+                                input.parentNode.insertBefore(feedback, input.nextSibling);
+                            }
+
+                            feedback.textContent = fieldError.message;
+                            feedback.style.display = 'block';
+                        }
+                    });
                 }
 
                 showError(errorMessage);
