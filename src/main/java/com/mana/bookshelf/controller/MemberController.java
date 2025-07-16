@@ -1,14 +1,12 @@
 package com.mana.bookshelf.controller;
 
 import com.mana.bookshelf.dto.MemberDTO;
+import com.mana.bookshelf.dto.MemberDetailDTO;
 import com.mana.bookshelf.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -36,5 +34,11 @@ public class MemberController {
     public ResponseEntity<List<MemberDTO>> getMembers() {
         List<MemberDTO> members = memberService.getMembers();
         return new ResponseEntity<>(members, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/details")
+    public ResponseEntity<MemberDetailDTO> getMemberDetails(@PathVariable Long id) {
+        MemberDetailDTO memberDetails = memberService.getDetailById(id);
+        return new ResponseEntity<>(memberDetails, HttpStatus.OK);
     }
 }

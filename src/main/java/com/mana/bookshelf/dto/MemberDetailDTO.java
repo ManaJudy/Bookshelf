@@ -11,6 +11,15 @@ public class MemberDetailDTO {
     private String subscription;
     private LocalDate subscriptionStartDate;
     private LocalDate subscriptionEndDate;
-    private Integer quota;
+
+    private Integer loanedBooks;
+    private Integer quotaLoanedBooks;
+
+    private Integer reservedBooks;
+    private Integer quotaReservedBooks;
+
+    private Integer extendedLoans;
+    private Integer quotaExtendedLoans;
+
     private LocalDate penalty;
 }

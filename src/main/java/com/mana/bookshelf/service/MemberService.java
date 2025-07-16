@@ -2,8 +2,11 @@ package com.mana.bookshelf.service;
 
 import com.mana.bookshelf.converter.dtotoentity.MemberDTOToMember;
 import com.mana.bookshelf.converter.entitytodto.MemberToMemberDTO;
+import com.mana.bookshelf.converter.entitytodto.MemberToMemberDetailDTO;
 import com.mana.bookshelf.dto.MemberDTO;
+import com.mana.bookshelf.dto.MemberDetailDTO;
 import com.mana.bookshelf.entity.Member;
+import com.mana.bookshelf.exception.EntityNotFoundException;
 import com.mana.bookshelf.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,11 +20,13 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberDTOToMember memberDTOToMember;
     private final MemberToMemberDTO memberToMemberDTO;
+    private final MemberToMemberDetailDTO memberToMemberDetailDTO;
 
-    public MemberService(MemberRepository memberRepository, MemberDTOToMember memberDTOToMember, MemberToMemberDTO memberToMemberDTO) {
+    public MemberService(MemberRepository memberRepository, MemberDTOToMember memberDTOToMember, MemberToMemberDTO memberToMemberDTO, MemberToMemberDetailDTO memberToMemberDetailDTO) {
         this.memberRepository = memberRepository;
         this.memberDTOToMember = memberDTOToMember;
         this.memberToMemberDTO = memberToMemberDTO;
+        this.memberToMemberDetailDTO = memberToMemberDetailDTO;
     }
 
     public void verifyMember(Member member) {
@@ -40,7 +45,13 @@ public class MemberService {
 
     public List<MemberDTO> getMembers() {
         return memberRepository.findAll().stream()
-                .map(memberToMemberDTO::apply)
+                .map(memberToMemberDTO)
                 .collect(Collectors.toList());
+    }
+
+    public MemberDetailDTO getDetailById(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Member not found with id: " + id));
+        return memberToMemberDetailDTO.apply(member);
     }
 }

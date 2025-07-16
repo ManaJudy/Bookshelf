@@ -1,5 +1,6 @@
 package com.mana.bookshelf.controller;
 
+import com.mana.bookshelf.dto.ExtendLoanRequestDTO;
 import com.mana.bookshelf.dto.LoanDTO;
 import com.mana.bookshelf.dto.ReturnLoanRequestDTO;
 import com.mana.bookshelf.service.LoanService;
@@ -35,6 +36,11 @@ public class LoanController {
         return "loans/return_loan"; // This should return the view name for returning a loan
     }
 
+    @GetMapping("/extend")
+    public String extendLoanForm() {
+        return "loans/extend_loan"; // This should return the view name for extending a loan
+    }
+
     @PostMapping("/{id}/return")
     public ResponseEntity<LoanDTO> returnLoan(@PathVariable Long id, @RequestBody ReturnLoanRequestDTO returnLoanRequest) {
         LoanDTO returnedLoan = loanService.returnLoan(id, returnLoanRequest.getReturnDate());
@@ -42,8 +48,8 @@ public class LoanController {
     }
 
     @PostMapping("/{id}/extend")
-    public ResponseEntity<LoanDTO> extendLoan(@PathVariable Long id) {
-        LoanDTO extendedLoan = loanService.extendLoan(id);
+    public ResponseEntity<LoanDTO> extendLoan(@PathVariable Long id, @RequestBody ExtendLoanRequestDTO extendLoanRequest) {
+        LoanDTO extendedLoan = loanService.extendLoan(id, extendLoanRequest.getExtendDate());
         return new ResponseEntity<>(extendedLoan, HttpStatus.OK);
     }
 

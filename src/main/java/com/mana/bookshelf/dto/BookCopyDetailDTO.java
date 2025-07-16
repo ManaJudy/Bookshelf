@@ -7,6 +7,6 @@ import java.time.LocalDate;
 @Data
 public class BookCopyDetailDTO {
     private Long id;
-    private boolean isAvailable;
+    private String availabilityStatus;
     private LocalDate previsionAvailabilityDate;
 }

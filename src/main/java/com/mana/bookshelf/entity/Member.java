@@ -30,8 +30,6 @@ public class Member {
 
     private boolean isAdmin;
 
-    private Integer extendCount = 0;
-
     public int getAge(LocalDate currentDate) {
         return currentDate.getYear() - birthDate.getYear();
     }

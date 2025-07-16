@@ -116,6 +116,11 @@
                         </div>
                     </div>
 
+                    <div class="form-group mb-3">
+                        <label for="extendDate" class="form-label">Nouvelle date d'extension</label>
+                        <input type="date" id="extendDate" name="extendDate" class="form-control" required th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+                    </div>
+
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                         <a th:href="@{/loans}" class="btn btn-secondary me-md-2">Annuler</a>
                         <button type="submit" class="btn btn-primary">Prolonger l'emprunt</button>
@@ -181,7 +186,7 @@
                             option.setAttribute('data-due-date', loan.dueDate);
 
                             // Format: nom adhérent - titre livre - date d'échéance
-                            option.textContent = `${loan.memberName} - ${loan.bookTitle} - Échéance: ${formatDate(loan.dueDate)}`;
+                            option.textContent = `Member ${loan.memberId} - Book ${loan.bookId} - Date ${loan.startDate}`;
 
                             loanSelect.appendChild(option);
                         });
@@ -232,13 +237,11 @@
         function submitForm() {
             const form = document.getElementById('extendLoanForm');
             const loanId = document.getElementById('loanId').value;
-
-            // Obtenir la date d'échéance actuelle et ajouter 14 jours par défaut
-            const selectedOption = document.getElementById('loanId').options[document.getElementById('loanId').selectedIndex]
+            const extendDate = document.getElementById('extendDate').value;
 
             // Créer l'objet à envoyer
             const extensionData = {
-
+                extendDate: extendDate
             };
 
             // Envoyer les données au serveur

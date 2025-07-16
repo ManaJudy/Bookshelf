@@ -31,8 +31,9 @@ public class BookToBookDetailDTO implements Function<Book, BookDetailDTO> {
         List<BookCopyDetailDTO> bookCopyDetailDTOs = book.getCopies().stream().map(c -> {
             BookCopyDetailDTO bookCopyDetailDTO = new BookCopyDetailDTO();
             bookCopyDetailDTO.setId(c.getId());
-            bookCopyDetailDTO.setAvailable(availableCopies.contains(c));
-            if (bookCopyDetailDTO.isAvailable())
+            boolean isAvailable = availableCopies.contains(c);
+            bookCopyDetailDTO.setAvailabilityStatus(isAvailable ? "Available" : "Not Available");
+            if (isAvailable)
                 bookCopyDetailDTO.setPrevisionAvailabilityDate(c.getLoans().get(c.getLoans().size() - 1).getPrevisionEndDate());
             return bookCopyDetailDTO;
         }).toList();

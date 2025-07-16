@@ -207,7 +207,7 @@
                             option.value = loan.id;
 
                             // Format: nom adhérent - titre livre - type d'emprunt
-                            option.textContent = `${loan.memberName} - ${loan.bookTitle} - ${loan.loanTypeName}`;
+                            option.textContent = `Member ${loan.memberId} - Book ${loan.bookId} - Date ${loan.startDate}`;
 
                             loanSelect.appendChild(option);
                         });
