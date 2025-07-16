@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/members")
 public class MemberController {
@@ -28,5 +30,11 @@ public class MemberController {
     @GetMapping("/add")
     public String addMemberForm() {
         return "members/add_member"; // This should return the view name for creating a member
+    }
+
+    @GetMapping
+    public ResponseEntity<List<MemberDTO>> getMembers() {
+        List<MemberDTO> members = memberService.getMembers();
+        return new ResponseEntity<>(members, HttpStatus.OK);
     }
 }

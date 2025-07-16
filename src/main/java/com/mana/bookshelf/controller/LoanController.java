@@ -6,10 +6,7 @@ import com.mana.bookshelf.service.LoanService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/loans")
@@ -26,6 +23,11 @@ public class LoanController {
         return new ResponseEntity<>(createdLoan, HttpStatus.CREATED);
     }
 
+    @GetMapping("/create")
+    public String createLoanForm() {
+        return "loans/create_loan"; // This should return the view name for creating a loan
+    }
+
     @PostMapping("/{id}/return")
     public ResponseEntity<LoanDTO> returnLoan(@PathVariable Long id, @RequestBody ReturnLoanRequestDTO returnLoanRequest) {
         LoanDTO returnedLoan = loanService.returnLoan(id, returnLoanRequest.getReturnDate());
@@ -38,3 +40,4 @@ public class LoanController {
         return new ResponseEntity<>(extendedLoan, HttpStatus.OK);
     }
 }
+

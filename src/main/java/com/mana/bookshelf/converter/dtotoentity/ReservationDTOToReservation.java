@@ -35,7 +35,7 @@ public class ReservationDTOToReservation implements Function<ReservationDTO, Res
         Reservation reservation = new Reservation();
         reservation.setId(reservationDTO.getId());
         bookRepository.findById(reservationDTO.getBookId()).orElseThrow(() -> new EntityNotFoundException("Book not found with id: " + reservationDTO.getBookId()));
-        BookCopy bookCopy = bookCopyRepository.findAvailableCopyByBookId(reservationDTO.getBookId(), reservationDTO.getReservationDate()).orElse(null);
+        BookCopy bookCopy = bookCopyRepository.findAvailableCopiesByBookId(reservationDTO.getBookId(), reservationDTO.getReservationDate()).stream().findFirst().orElse(null);
         reservation.setBookCopy(bookCopy);
         Member member = memberRepository.findById(reservationDTO.getMemberId())
                 .orElseThrow(() -> new EntityNotFoundException("Member not found with id: " + reservationDTO.getMemberId()));

@@ -8,6 +8,8 @@ import com.mana.bookshelf.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MemberService {
@@ -34,5 +36,11 @@ public class MemberService {
         verifyMember(member);
         member = memberRepository.save(member);
         return memberToMemberDTO.apply(member);
+    }
+
+    public List<MemberDTO> getMembers() {
+        return memberRepository.findAll().stream()
+                .map(memberToMemberDTO::apply)
+                .collect(Collectors.toList());
     }
 }

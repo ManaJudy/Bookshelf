@@ -37,7 +37,7 @@ public class LoanDTOToLoan implements Function<LoanDTO, Loan> {
         Loan loan = new Loan();
         loan.setId(loanDTO.getId());
         bookRepository.findById(loanDTO.getBookId()).orElseThrow(() -> new EntityNotFoundException("Book not found with id: " + loanDTO.getBookId()));
-        BookCopy bookCopy = bookCopyRepository.findAvailableCopyByBookId(loanDTO.getBookId(), startDate).orElse(null);
+        BookCopy bookCopy = bookCopyRepository.findAvailableCopiesByBookId(loanDTO.getBookId(), startDate).stream().findFirst().orElse(null);
         loan.setBookCopy(bookCopy);
         Member member = memberRepository.findById(loanDTO.getMemberId())
                 .orElseThrow(() -> new EntityNotFoundException("Member not found with id: " + loanDTO.getMemberId()));

@@ -14,7 +14,8 @@
         <ul class="sidebar-menu">
             <li class="menu-category">Livres</li>
             <li><a th:href="@{/books}" th:class="${activeMenu == 'book-catalog'} ? 'active' : ''"><i class="fas fa-book"></i> <span>Catalogue</span></a></li>
-            <li><a th:href="@{/loans/new}" th:class="${activeMenu == 'book-loan'} ? 'active' : ''"><i class="fas fa-hand-holding"></i> <span>Emprunter</span></a></li>
+            <li><a th:href="@{/loans/create}" th:class="${activeMenu == 'book-loan'} ? 'active' : ''"><i class="fas fa-hand-holding"></i> <span>Emprunter</span></a></li>
+            <li><a th:href="@{/loans/return}" th:class="${activeMenu == 'book-return'} ? 'active' : ''"><i class="fas fa-undo"></i> <span>Rendre</span></a></li>
 
             <li class="menu-category">Adhérents</li>
             <li><a th:href="@{/members}" th:class="${activeMenu == 'member-list'} ? 'active' : ''"><i class="fas fa-users"></i> <span>Liste des adhérents</span></a></li>
@@ -239,4 +240,3 @@
     </th:block>
 </body>
 </html>
-

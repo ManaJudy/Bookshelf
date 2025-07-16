@@ -28,7 +28,7 @@ public class LoanService {
 
     public void verifyLoan(Loan loan) {
         Member member = loan.getMember();
-        if (member.getSubscriptionEndDate().isAfter(loan.getStartDate()))
+        if (member.getSubscriptionEndDate().isBefore(loan.getStartDate()))
             throw new IllegalStateException("Member's subscription is not active for the loan start date.");
         if (loanRepository.countByMemberIdAndIsReturnedFalse(member.getId(), loan.getStartDate()) >= member.getSubscriptionType().getQuota())
             throw new IllegalStateException("Member has reached the loan quota for their subscription type.");
