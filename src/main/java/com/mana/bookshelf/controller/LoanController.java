@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/loans")
 public class LoanController {
@@ -28,6 +30,11 @@ public class LoanController {
         return "loans/create_loan"; // This should return the view name for creating a loan
     }
 
+    @GetMapping("/return")
+    public String returnLoanForm() {
+        return "loans/return_loan"; // This should return the view name for returning a loan
+    }
+
     @PostMapping("/{id}/return")
     public ResponseEntity<LoanDTO> returnLoan(@PathVariable Long id, @RequestBody ReturnLoanRequestDTO returnLoanRequest) {
         LoanDTO returnedLoan = loanService.returnLoan(id, returnLoanRequest.getReturnDate());
@@ -39,5 +46,10 @@ public class LoanController {
         LoanDTO extendedLoan = loanService.extendLoan(id);
         return new ResponseEntity<>(extendedLoan, HttpStatus.OK);
     }
-}
 
+    @GetMapping
+    public ResponseEntity<List<LoanDTO>> getLoans() {
+        List<LoanDTO> loans = loanService.getLoans();
+        return new ResponseEntity<>(loans, HttpStatus.OK);
+    }
+}
