@@ -13,5 +13,5 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
     @Query("select count(l) from Loan l where l.member.id = :memberId and (l.endDate > :currentDate or l.isReturned = false)")
     int countByMemberIdAndIsReturnedFalse(Long memberId, LocalDate currentDate);
 
-    List<Loan> findLoansByReturnedFalse();
+    List<Loan> findLoansByIsReturnedFalse();
 }

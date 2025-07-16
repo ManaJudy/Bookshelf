@@ -1,6 +1,5 @@
 package com.mana.bookshelf.repository;
 
-import com.mana.bookshelf.entity.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

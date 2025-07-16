@@ -1,7 +1,6 @@
 package com.mana.bookshelf.converter.dtotoentity;
 
 import com.mana.bookshelf.dto.ReservationDTO;
-import com.mana.bookshelf.entity.BookCopy;
 import com.mana.bookshelf.entity.LoanType;
 import com.mana.bookshelf.entity.Member;
 import com.mana.bookshelf.entity.Reservation;

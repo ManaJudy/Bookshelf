@@ -88,7 +88,7 @@ public class LoanService {
     }
 
     public List<LoanDTO> getLoans() {
-        return loanRepository.findLoansByReturnedFalse().stream()
+        return loanRepository.findLoansByIsReturnedFalse().stream()
                 .map(loanToLoanDTO)
                 .collect(Collectors.toList());
     }

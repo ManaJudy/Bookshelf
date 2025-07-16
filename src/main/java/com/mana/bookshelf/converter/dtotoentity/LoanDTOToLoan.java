@@ -1,7 +1,6 @@
 package com.mana.bookshelf.converter.dtotoentity;
 
 import com.mana.bookshelf.dto.LoanDTO;
-import com.mana.bookshelf.entity.BookCopy;
 import com.mana.bookshelf.entity.Loan;
 import com.mana.bookshelf.entity.Member;
 import com.mana.bookshelf.entity.LoanType;

@@ -2,8 +2,6 @@ package com.mana.bookshelf.converter.entitytodto;
 
 import com.mana.bookshelf.dto.BookCopyDetailDTO;
 import com.mana.bookshelf.dto.BookDetailDTO;
-import com.mana.bookshelf.entity.Book;
-import com.mana.bookshelf.entity.BookCopy;
 import com.mana.bookshelf.repository.BookCopyRepository;
 import org.springframework.stereotype.Component;
 

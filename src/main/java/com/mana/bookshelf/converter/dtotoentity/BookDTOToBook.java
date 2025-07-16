@@ -1,7 +1,6 @@
 package com.mana.bookshelf.converter.dtotoentity;
 
 import com.mana.bookshelf.dto.BookDTO;
-import com.mana.bookshelf.entity.Book;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Function;

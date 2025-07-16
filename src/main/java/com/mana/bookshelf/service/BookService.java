@@ -4,7 +4,6 @@ import com.mana.bookshelf.converter.entitytodto.BookToBookDTO;
 import com.mana.bookshelf.converter.entitytodto.BookToBookDetailDTO;
 import com.mana.bookshelf.dto.BookDTO;
 import com.mana.bookshelf.dto.BookDetailDTO;
-import com.mana.bookshelf.entity.Book;
 import com.mana.bookshelf.exception.EntityNotFoundException;
 import com.mana.bookshelf.repository.BookRepository;
 import org.springframework.stereotype.Service;
