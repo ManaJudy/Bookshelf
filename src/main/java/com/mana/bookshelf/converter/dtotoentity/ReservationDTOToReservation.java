@@ -44,7 +44,7 @@ public class ReservationDTOToReservation implements Function<ReservationDTO, Res
                 .orElseThrow(() -> new EntityNotFoundException("LoanType not found with id: " + reservationDTO.getLoanTypeId()));
         reservation.setLoanType(loanType);
         reservation.setReservationDate(reservationDTO.getReservationDate());
-        reservation.setApproved(reservationDTO.getApproved());
+        reservation.setApproved(reservationDTO.isApproved());
         return reservation;
     }
 }

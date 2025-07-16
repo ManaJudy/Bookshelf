@@ -1,6 +1,5 @@
 package com.mana.bookshelf.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -10,7 +9,7 @@ import java.time.LocalDate;
 @Entity
 public class Member {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String lastName;
@@ -29,7 +28,7 @@ public class Member {
 
     private LocalDate penaltyEndDate;
 
-    private Boolean isAdmin;
+    private boolean isAdmin;
 
     public int getAge(LocalDate currentDate) {
         return currentDate.getYear() - birthDate.getYear();

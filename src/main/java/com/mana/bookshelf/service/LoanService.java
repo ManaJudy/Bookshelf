@@ -46,7 +46,7 @@ public class LoanService {
         if (loan.getStartDate() == null) loan.setStartDate(LocalDate.now());
         loan.setEndDate(null);
         loan.setPrevisionEndDate(loan.getStartDate().plusDays(loan.getLoanType().getMaxLoanDays()));
-        loan.setIsReturned(false);
+        loan.setReturned(false);
         verifyLoan(loan);
         loan = loanRepository.save(loan);
         return loanToLoanDTO.apply(loan);
@@ -55,9 +55,9 @@ public class LoanService {
     public LoanDTO returnLoan(Long loanId, LocalDate returnDate) {
         Loan loan = loanRepository.findById(loanId)
                 .orElseThrow(() -> new EntityNotFoundException("Loan not found with id: " + loanId));
-        if (loan.getIsReturned())
+        if (loan.isReturned())
             throw new IllegalStateException("Loan with id " + loanId + " has already been returned.");
-        loan.setIsReturned(true);
+        loan.setReturned(true);
         loan.setEndDate(returnDate != null ? returnDate : LocalDate.now());
         loan = loanRepository.save(loan);
         int j = 2; // To change // TODO
@@ -76,7 +76,7 @@ public class LoanService {
         Loan loan = loanRepository.findById(loanId)
                 .orElseThrow(() -> new EntityNotFoundException("Loan not found with id: " + loanId));
         LocalDate newPrevisionEndDate = loan.getPrevisionEndDate().plusDays(loan.getLoanType().getMaxLoanDays());
-        if (loan.getIsReturned())
+        if (loan.isReturned())
             throw new IllegalStateException("Loan with id " + loanId + " has already been returned.");
         if (newPrevisionEndDate.isBefore(loan.getPrevisionEndDate()))
             throw new IllegalArgumentException("New prevision end date cannot be before the current prevision end date.");

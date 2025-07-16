@@ -29,6 +29,13 @@ public class AuthController {
         return new ResponseEntity<>(authenticatedMember, HttpStatus.OK);
     }
 
+    @PostMapping("/login-admin")
+    public ResponseEntity<MemberDTO> authenticateAdmin(@RequestBody LoginRequestDTO loginRequest, HttpSession session) {
+        MemberDTO authenticatedAdmin = authService.authenticateAdmin(loginRequest.getEmail(), loginRequest.getPassword());
+        session.setAttribute("adminId", authenticatedAdmin.getId());
+        return new ResponseEntity<>(authenticatedAdmin, HttpStatus.OK);
+    }
+
     @GetMapping("/login")
     public String login() {
         return "login";
