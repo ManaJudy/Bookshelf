@@ -23,12 +23,14 @@ public class MemberDTOToMember implements Function<MemberDTO, Member> {
     @Override
     public Member apply(MemberDTO memberDTO) {
         if (memberDTO == null) return null;
+        System.out.println("Converting MemberDTO to Member: " + memberDTO);
         Member member = new Member();
         member.setId(memberDTO.getId());
         member.setLastName(memberDTO.getLastName());
         member.setFirstName(memberDTO.getFirstName());
         member.setBirthDate(memberDTO.getBirthDate());
         member.setAddress(memberDTO.getAddress());
+
         SubscriptionType subscriptionType = subscriptionTypeRepository.findById(memberDTO.getSubscriptionTypeId())
                 .orElseThrow(() -> new EntityNotFoundException("SubscriptionType not found with id: " + memberDTO.getSubscriptionTypeId()));
         member.setSubscriptionType(subscriptionType);

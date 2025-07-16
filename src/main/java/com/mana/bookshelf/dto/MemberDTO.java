@@ -19,4 +19,6 @@ public class MemberDTO {
     private LocalDate subscriptionStartDate;
     private LocalDate subscriptionEndDate;
     private LocalDate penaltyEndDate;
+
+
 }
