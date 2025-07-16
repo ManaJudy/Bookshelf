@@ -18,7 +18,7 @@ public class LoanToLoanDTO implements Function<Loan, LoanDTO> {
         loanDTO.setMemberId(loan.getMember().getId());
         loanDTO.setStartDate(loan.getStartDate());
         loanDTO.setEndDate(loan.getEndDate());
-        loanDTO.setIsReturned(loan.getIsReturned());
+        loanDTO.setReturned(loan.isReturned());
         loanDTO.setLoanTypeId(loan.getLoanType().getId());
         loanDTO.setPrevisionEndDate(loan.getPrevisionEndDate());
         return loanDTO;

@@ -18,7 +18,7 @@ public class ReservationToReservationDTO implements Function<Reservation, Reserv
         reservationDTO.setMemberId(reservation.getMember().getId());
         reservationDTO.setLoanTypeId(reservation.getLoanType().getId());
         reservationDTO.setReservationDate(reservation.getReservationDate());
-        reservationDTO.setApproved(reservation.getApproved());
+        reservationDTO.setApproved(reservation.isApproved());
         return reservationDTO;
     }
 }

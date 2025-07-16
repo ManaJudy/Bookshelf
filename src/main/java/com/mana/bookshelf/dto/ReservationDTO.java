@@ -11,5 +11,5 @@ public class ReservationDTO {
     private Long memberId;
     private Long loanTypeId;
     private LocalDate reservationDate;
-    private Boolean approved;
+    private boolean isApproved;
 }

@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Entity
 public class Reservation {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
