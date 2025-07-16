@@ -8,9 +8,6 @@ import com.mana.bookshelf.exception.EntityNotFoundException;
 import com.mana.bookshelf.repository.ReservationRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 public class ReservationService {
     private final ReservationRepository reservationRepository;
@@ -39,7 +36,7 @@ public class ReservationService {
     public ReservationDTO approveReservation(Long reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new EntityNotFoundException("Reservation not found with id: " + reservationId));
-        if (reservation.getApproved())
+        if (reservation.isApproved())
             throw new IllegalStateException("Reservation with id " + reservationId + " has already been approved.");
         reservation.setApproved(true);
         reservation = reservationRepository.save(reservation);

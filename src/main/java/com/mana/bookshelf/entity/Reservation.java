@@ -23,5 +23,5 @@ public class Reservation {
     private LoanType loanType;
 
     private LocalDate reservationDate;
-    private Boolean approved;
+    private boolean isApproved;
 }

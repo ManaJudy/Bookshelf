@@ -32,6 +32,8 @@ public class BookToBookDetailDTO implements Function<Book, BookDetailDTO> {
             BookCopyDetailDTO bookCopyDetailDTO = new BookCopyDetailDTO();
             bookCopyDetailDTO.setId(c.getId());
             bookCopyDetailDTO.setAvailable(availableCopies.contains(c));
+            if (bookCopyDetailDTO.isAvailable())
+                bookCopyDetailDTO.setPrevisionAvailabilityDate(c.getLoans().getLast().getPrevisionEndDate());
             return bookCopyDetailDTO;
         }).toList();
         bookDetailDTO.setCopies(bookCopyDetailDTOs);
